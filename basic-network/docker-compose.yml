@@ -10,6 +10,7 @@ networks:
 
 services:
   ca.example.com:
+    tty: true
     image: hyperledger/fabric-ca
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server

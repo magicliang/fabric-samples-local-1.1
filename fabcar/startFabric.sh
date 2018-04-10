@@ -21,8 +21,10 @@ rm -rf ./hfc-key-store
 
 # launch network; create channel and join peer to channel
 cd ../basic-network
+# 用这种方式来调用脚本的话，实际上就会把脚本先输出出来。
 ./start.sh
 
+# 单独用 cli 容器来启动链码，核心的环境变量也只要两个就够了。
 # Now launch the CLI container in order to install, instantiate chaincode
 # and prime the ledger with our 10 cars
 docker-compose -f ./docker-compose.yml up -d cli

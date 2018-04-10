@@ -8,11 +8,14 @@
 set -e
 
 # Shut down the Docker containers for the system tests.
+# 先 kill 再 down
 docker-compose -f docker-compose.yml kill && docker-compose -f docker-compose.yml down
 
+# 删除home目录下的这个文件夹
 # remove the local state
 rm -f ~/.hfc-key-store/*
 
+# 只删除链码镜像
 # remove chaincode docker images
 docker rmi $(docker images dev-* -q)
 
