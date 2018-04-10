@@ -40,7 +40,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	crypto_suite.setCryptoKeyStore(crypto_store);
 	fabric_client.setCryptoSuite(crypto_suite);
 
-	// 从本地获取 user1 的 user object。 
+	// 从本地获取 user1 的 user object。这里已经不需要ca_client了
 	// get the enrolled user from persistence, this user will sign all requests
 	return fabric_client.getUserContext('user1', true);
 }).then((user_from_store) => {
@@ -65,6 +65,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	return channel.queryByChaincode(request);
 }).then((query_responses) => {
 	console.log("Query has completed, checking results");
+	// 这里可以说是同步拿到 response 的。
 	// query_responses could have more than one  results if there multiple peers were used as targets
 	if (query_responses && query_responses.length == 1) {
 		if (query_responses[0] instanceof Error) {
