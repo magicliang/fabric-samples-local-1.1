@@ -58,13 +58,24 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	// createCar chaincode function - requires 5 args, ex: args: ['CAR12', 'Honda', 'Accord', 'Black', 'Tom'],
 	// changeCarOwner chaincode function - requires 2 args , ex: args: ['CAR10', 'Dave'],
 	// must send the proposal to endorsing peers
+	// var request = {
+	// 	//targets: let default to the peer assigned to the client
+	// 	chaincodeId: 'fabcar',
+	// 	fcn: '',
+	// 	args: [''],
+	// 	chainId: 'mychannel',
+	// 	txId: tx_id
+	// };
+
+	// 默认的request是为空的，我们这里直接抄教程的 request 生成体
 	var request = {
-		//targets: let default to the peer assigned to the client
-		chaincodeId: 'fabcar',
-		fcn: '',
-		args: [''],
-		chainId: 'mychannel',
-		txId: tx_id
+  		// targets: let default to the peer assigned to the client
+  		chaincodeId: 'fabcar',
+  		// 这个 createCar 可以重复调用，是幂等的。
+  		fcn: 'createCar',
+  		args: ['CAR10', 'Chevy', 'Volt', 'Red', 'Nick'],
+  		chainId: 'mychannel',
+  		txId: tx_id
 	};
 
 	// send the transaction proposal to the peers

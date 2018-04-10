@@ -17,11 +17,12 @@ var os = require('os');
 var fabric_client = new Fabric_Client();
 
 // setup the fabric network
+// 这个 channel 只是被加入的逻辑，而不是在这里创建频道
 var channel = fabric_client.newChannel('mychannel');
+// 只是查询的话，最近的 peer 就行了。
 var peer = fabric_client.newPeer('grpc://localhost:7051');
 channel.addPeer(peer);
 
-//
 var member_user = null;
 var store_path = path.join(__dirname, 'hfc-key-store');
 console.log('Store path:'+store_path);
@@ -39,6 +40,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	crypto_suite.setCryptoKeyStore(crypto_store);
 	fabric_client.setCryptoSuite(crypto_suite);
 
+	// 从本地获取 user1 的 user object。 
 	// get the enrolled user from persistence, this user will sign all requests
 	return fabric_client.getUserContext('user1', true);
 }).then((user_from_store) => {
@@ -58,6 +60,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 		args: ['']
 	};
 
+	// 直接用 channel 默认的channel api 发送请求
 	// send the query proposal to the peer
 	return channel.queryByChaincode(request);
 }).then((query_responses) => {

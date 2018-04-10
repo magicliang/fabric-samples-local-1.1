@@ -10,7 +10,6 @@ networks:
 
 services:
   ca.example.com:
-    tty: true
     image: hyperledger/fabric-ca
     environment:
       - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
@@ -19,6 +18,7 @@ services:
       - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/4239aa0dcd76daeeb8ba0cda701851d14504d31aad1b2ddddbac6a57365e497c_sk
     ports:
       - "7054:7054"
+    # 这里启动了一个 admin 用户。用户名和密码可以任意定义。-b 是 bootstrap 的意思。这个用户名密码是 ca client 第一次 enroll 的时候用的。
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
     volumes:
       - ./crypto-config/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
@@ -113,6 +113,7 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
       - CORE_CHAINCODE_KEEPALIVE=10
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    # 因为这个命令是开启一个 bash，所以 cli 永远都活着。
     command: /bin/bash
     volumes:
         - /var/run/:/host/var/run/

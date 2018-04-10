@@ -11,7 +11,7 @@ set -e
 # 先 kill 再 down
 docker-compose -f docker-compose.yml kill && docker-compose -f docker-compose.yml down
 
-# 删除home目录下的这个文件夹
+# 删除home目录下的这个文件夹。但fabcar应用生成的store都不在这里，所以什么都删除不掉。
 # remove the local state
 rm -f ~/.hfc-key-store/*
 
