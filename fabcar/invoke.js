@@ -77,7 +77,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
   		fcn: 'createCar',
   		args: ['CAR10', 'Chevy', 'Volt', 'Red', 'Nick'],
   		chainId: 'mychannel',
-  		// 这个地方就已经把 tx_id 与 proposal 绑定起来了。
+  		// 这个地方就已经把 tx_id 对象与 proposal 绑定起来了。
   		txId: tx_id
 	};
 	// 1 先发送 proposal
