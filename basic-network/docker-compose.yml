@@ -21,6 +21,8 @@ services:
     # 这里启动了一个 admin 用户。用户名和密码可以任意定义。-b 是 bootstrap 的意思。这个用户名密码是 ca client 第一次 enroll 的时候用的。
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
     volumes:
+      # 用本地生成的配置文件来代替默认的配置文件。
+      - ./fabric-ca-server-config.yaml:/etc/hyperledger/fabric-ca-server/fabric-ca-server-config.yaml
       # 这里是用一个组织的 ca 文件夹作为根ca的配置文件。
       - ./crypto-config/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
     container_name: ca.example.com

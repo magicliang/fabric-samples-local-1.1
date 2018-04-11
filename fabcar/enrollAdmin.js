@@ -69,8 +69,8 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
         // 用全局的 ca_client 来登记一个admin user，直接提供用户名和密码。这一步必须有ca server 存在。
         // need to enroll it with CA server
         return fabric_ca_client.enroll({
-          enrollmentID: 'admin',
-          enrollmentSecret: 'adminpw'
+          enrollmentID: 'magicliang',
+          enrollmentSecret: '123456'
         }).then((enrollment) => {
           console.log('Successfully enrolled admin user "admin"');
           // 这里的 enrollment 是从ca server 里获取的。可以被认为是一个 ECert。
