@@ -60,6 +60,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 		args: ['']
 	};
 
+	// 这里就没有什么 proposal 和再发送 transaction 的过程。
 	// 直接用 channel 默认的channel api 发送请求
 	// send the query proposal to the peer
 	return channel.queryByChaincode(request);

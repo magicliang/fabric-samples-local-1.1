@@ -38,6 +38,7 @@ function printHelp () {
   echo
   echo "	eyfn.sh generate -c mychannel"
   echo "	eyfn.sh up -c mychannel -s couchdb"
+  # 慎用 node 链码，性能比较差。达到分钟级别。
   echo "	eyfn.sh up -l node"
   echo "	eyfn.sh down -c mychannel"
   echo
@@ -96,6 +97,7 @@ function networkUp () {
     generateChannelArtifacts
     createConfigTx
   fi
+  # 先由 docker-compose 直接启动所有的 peer。这证明了，peer 的启动是完全独立于 channel 的生命周期的，可以随便启动。
   # start org3 peers
   if [ "${IF_COUCHDB}" == "couchdb" ]; then
       IMAGE_TAG=${IMAGETAG} docker-compose -f $COMPOSE_FILE_ORG3 -f $COMPOSE_FILE_COUCH_ORG3 up -d 2>&1
@@ -209,6 +211,7 @@ function generateChannelArtifacts() {
   (cd org3-artifacts
    export FABRIC_CFG_PATH=$PWD
    set -x
+   # -printOrg 是1.1.0的 configtxgen 才有的选项，专门针对手动加组织到频道里设计的。
    configtxgen -printOrg Org3MSP > ../channel-artifacts/org3.json
    res=$?
    set +x

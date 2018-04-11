@@ -155,6 +155,8 @@ upgradeChaincode () {
     ORG=$2
     setGlobals $PEER $ORG
 
+    # upgrade 是一个动词。一定要在install之后执行。
+    # 一定要用同名的 chaincode 来重新 invoke init 方法而共享旧 ledger。
     set -x
     peer chaincode upgrade -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -v 2.0 -c '{"Args":["init","a","90","b","210"]}' -P "OR ('Org1MSP.peer','Org2MSP.peer','Org3MSP.peer')"
     res=$?
@@ -209,19 +211,35 @@ fetchChannelConfig() {
 
   echo "Fetching the most recent configuration block for the channel"
   if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
+  	# 打开命令细节追踪
     set -x
+    # 直接用 cli + peer channel 命令，还不需要用到 configlator。
+    # 不管是不是 tls，都需要 orderer 的 ca
+    # fetch 的时候，也要指定是哪个 channel 的 configuration block。让 orderer 在自己的 channel 链表里面找。
+    # 获取这个频道的配置区块。此时的配置区块是最新的区块（大多数情况下是区块5）。
     peer channel fetch config config_block.pb -o orderer.example.com:7050 -c $CHANNEL --cafile $ORDERER_CA
     set +x
+    # 关闭命令细节追踪
   else
     set -x
+    # 就多了一个 tls 的 option
     peer channel fetch config config_block.pb -o orderer.example.com:7050 -c $CHANNEL --tls --cafile $ORDERER_CA
     set +x
   fi
 
   echo "Decoding config block to JSON and isolating config to ${OUTPUT}"
   set -x
+  # 因为 profobuf 格式大部分不可读，先解码，然后用 jq 做 JSONPATH 查询。
+  # common.Block 的定义就是
+  # https://github.com/hyperledger/fabric/blob/13447bf5ead693f07285ce63a1903c5d0d25f096/protos/common/common.pb.go
   configtxlator proto_decode --input config_block.pb --type common.Block | jq .data.data[0].payload.data.config > "${OUTPUT}"
   set +x
+  # 默认情况下，我们得到的其实 configurtion block 3。前面还有3个 configuration block。
+  # block 0: genesis block
+  # block 1: Org1 anchor peer update
+  # block 2: Org2 anchor peer update
+  # 注意看，这个 config.json 的 sequence 也是3。
+  # 这个 config.json 也是我们配置更新的基线。
 }
 
 # signConfigtxAsPeerOrg <org> <configtx.pb>
@@ -244,10 +262,17 @@ createConfigUpdate() {
   OUTPUT=$4
 
   set -x
+  # 注意，此时我们的源 config 只是 configuration block 的一个残片的解码版本，所以我们不能直接用原来的protobuf，而需要重新编码这个残片。
   configtxlator proto_encode --input "${ORIGINAL}" --type common.Config > original_config.pb
+  # 这里的 type 是 common.Config，类型定义在这里：
+  # https://github.com/hyperledger/fabric/blob/13447bf5ead693f07285ce63a1903c5d0d25f096/protos/common/configtx.pb.go
   configtxlator proto_encode --input "${MODIFIED}" --type common.Config > modified_config.pb
+  # 这里一定要加入 channel id
+  # 这里是一种 pb 格式的 diff。修改文件要转成 json，而制作 diff 又要在 protobuf 的形式了。
   configtxlator compute_update --channel_id "${CHANNEL}" --original original_config.pb --updated modified_config.pb > config_update.pb
+  # > 也可以用 jq . > ，但确实没什么必要。这个管道输出天然就是可读的 json 形式了。
   configtxlator proto_decode --input config_update.pb  --type common.ConfigUpdate > config_update.json
+  # 再把 update 装进专门的 update 信封里面。注意这里嵌入 json 的形式。
   echo '{"payload":{"header":{"channel_header":{"channel_id":"'$CHANNEL'", "type":2}},"data":{"config_update":'$(cat config_update.json)'}}}' | jq . > config_update_in_envelope.json
   configtxlator proto_encode --input config_update_in_envelope.json --type common.Envelope > "${OUTPUT}"
   set +x

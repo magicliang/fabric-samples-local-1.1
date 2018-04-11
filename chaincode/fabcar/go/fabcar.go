@@ -24,6 +24,9 @@
 
 package main
 
+ // shim 的类型定义
+ // https://github.com/hyperledger/fabric/blob/13447bf5ead693f07285ce63a1903c5d0d25f096/core/chaincode/shim/java/src/main/java/org/hyperledger/fabric/shim/ChaincodeStub.java
+ // https://github.com/hyperledger/fabric/blob/13447bf5ead693f07285ce63a1903c5d0d25f096/core/chaincode/shim/interfaces_stable.go
 /* Imports
  * 4 utility libraries for formatting, handling bytes, reading and writing JSON, and string manipulation
  * 2 specific Hyperledger Fabric specific libraries for Smart Contracts
@@ -50,6 +53,8 @@ type Car struct {
 	Owner  string `json:"owner"`
 }
 
+
+// 只有这两类事务才会调动到这个方法：instantiate or upgrade
 /*
  * The Init method is called when the Smart Contract "fabcar" is instantiated by the blockchain network
  * Best practice is to have any Ledger initialization in separate function -- see initLedger()

@@ -10,7 +10,7 @@
 # channel previously setup in the BYFN tutorial and install the
 # chaincode as version 2.0 on peer0.org3.
 #
-
+# step 2 把所有的新 peer 加入 channel 中，重新安装 2.0 的 chaincode，升级 endorsement policy 必须如此。
 echo
 echo "========= Getting Org3 on to your first network ========= "
 echo
@@ -35,8 +35,10 @@ fi
 # import utils
 . scripts/utils.sh
 
+# 这一步纯粹是为了在 org3 节点加入 network 以前输出一些确认信息。
 echo "Fetching channel config block from orderer..."
 set -x
+# 获取这个channel的0号区块，即channel genesis block。永远是区块0。
 peer channel fetch 0 $CHANNEL_NAME.block -o orderer.example.com:7050 -c $CHANNEL_NAME --tls --cafile $ORDERER_CA >&log.txt
 res=$?
 set +x

@@ -11,6 +11,7 @@
 # channel to version 2.0, thus completing the addition of org3 to the
 # network previously setup in the BYFN tutorial.
 #
+# step 3，修改旧 peer，让它们安装并初始化自己的新链码。
 
 echo
 echo "========= Finish adding Org3 to your first network ========= "

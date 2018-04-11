@@ -42,6 +42,7 @@ echo "Channel name : "$CHANNEL_NAME
 # import functions
 . scripts/utils.sh
 
+# 如果 chaincode 容器没有初始化过，那么这个 query ，就会刺激链码容器产生。因为对底层而言，只有一个invoke函数。
 chaincodeQuery 0 3 90
 chaincodeInvoke 0 3
 chaincodeQuery 0 3 80

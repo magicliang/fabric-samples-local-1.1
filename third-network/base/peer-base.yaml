@@ -17,6 +17,7 @@ services:
       - CORE_LOGGING_LEVEL=INFO
       #- CORE_LOGGING_LEVEL=DEBUG
       - CORE_PEER_TLS_ENABLED=true
+      # 这个默认的选项，在普通的org形成 consortium 的时候就会起作用，接下来加入联盟的新 peer 更加需要这个，才能形成 leader，才能进行 gossip 同步。
       - CORE_PEER_GOSSIP_USELEADERELECTION=true
       - CORE_PEER_GOSSIP_ORGLEADER=false
       - CORE_PEER_PROFILE_ENABLED=true
