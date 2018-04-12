@@ -12,6 +12,8 @@ source $(dirname "$0")/env.sh
 # Wait for setup to complete sucessfully
 awaitSetup
 
+# -u 是url， -d 是调试模式，--enrollment.profile tls 是获取 tls 格式的证书。tls一定要存在msp账户里么？是的。
+# ENROLLMENT_URL 里写了 enroll 用的账户密码。
 # Enroll to get orderer's TLS cert (using the "tls" profile)
 fabric-ca-client enroll -d --enrollment.profile tls -u $ENROLLMENT_URL -M /tmp/tls --csr.hosts $ORDERER_HOST
 
@@ -22,6 +24,7 @@ cp /tmp/tls/keystore/* $ORDERER_GENERAL_TLS_PRIVATEKEY
 cp /tmp/tls/signcerts/* $ORDERER_GENERAL_TLS_CERTIFICATE
 rm -rf /tmp/tls
 
+# 直接用 msp 来获取 msp 格式的证书。这次用的是 default 的 profile
 # Enroll again to get the orderer's enrollment certificate (default profile)
 fabric-ca-client enroll -d -u $ENROLLMENT_URL -M $ORDERER_GENERAL_LOCALMSPDIR
 

@@ -50,6 +50,7 @@ CHANNEL_NAME=mychannel
 # Query timeout in seconds
 QUERY_TIMEOUT=15
 
+# 用秒来做单位来实验 sleep 和 timeout
 # Setup timeout in seconds (for setup container to complete)
 SETUP_TIMEOUT=120
 
@@ -57,6 +58,7 @@ SETUP_TIMEOUT=120
 LOGDIR=$DATA/logs
 LOGPATH=/$LOGDIR
 
+# 用文件名来做信号
 # Name of a the file to create when setup is successful
 SETUP_SUCCESS_FILE=${LOGDIR}/setup.successful
 # The setup container's log file
@@ -182,6 +184,7 @@ function genClientTLSCert {
    CERT_FILE=$2
    KEY_FILE=$3
 
+   # 用 csr 获取一个特定的 tls 证书。
    # Get a client cert
    fabric-ca-client enroll -d --enrollment.profile tls -u $ENROLLMENT_URL -M /tmp/tls --csr.hosts $HOST_NAME
 
@@ -243,10 +246,12 @@ function switchToAdminIdentity {
       log "Enrolling admin '$ADMIN_NAME' with $CA_HOST ..."
       export FABRIC_CA_CLIENT_HOME=$ORG_ADMIN_HOME
       export FABRIC_CA_CLIENT_TLS_CERTFILES=$CA_CHAINFILE
+      # 登记为 admin。不需要专门放证书到 MSP 文件夹。
       fabric-ca-client enroll -d -u https://$ADMIN_NAME:$ADMIN_PASS@$CA_HOST:7054
       # If admincerts are required in the MSP, copy the cert there now and to my local MSP also
       if [ $ADMINCERTS ]; then
          mkdir -p $(dirname "${ORG_ADMIN_CERT}")
+         # 把组织的 admin 用户的 signcerts 拷贝到用户的 admincerts 文件夹下
          cp $ORG_ADMIN_HOME/msp/signcerts/* $ORG_ADMIN_CERT
          mkdir $ORG_ADMIN_HOME/msp/admincerts
          cp $ORG_ADMIN_HOME/msp/signcerts/* $ORG_ADMIN_HOME/msp/admincerts
@@ -263,6 +268,7 @@ function switchToUserIdentity {
       dowait "$CA_NAME to start" 60 $CA_LOGFILE $CA_CHAINFILE
       log "Enrolling user for organization $ORG with home directory $FABRIC_CA_CLIENT_HOME ..."
       export FABRIC_CA_CLIENT_TLS_CERTFILES=$CA_CHAINFILE
+      # 登记为普通的用户。
       fabric-ca-client enroll -d -u https://$USER_NAME:$USER_PASS@$CA_HOST:7054
       # Set up admincerts directory if required
       if [ $ADMINCERTS ]; then
@@ -279,6 +285,7 @@ function revokeFabricUserAndGenerateCRL {
    export  FABRIC_CA_CLIENT_HOME=$ORG_ADMIN_HOME
    logr "Revoking the user '$USER_NAME' of the organization '$ORG' with Fabric CA Client home directory set to $FABRIC_CA_CLIENT_HOME and generating CRL ..."
    export FABRIC_CA_CLIENT_TLS_CERTFILES=$CA_CHAINFILE
+   # 撤回证书
    fabric-ca-client revoke -d --revoke.name $USER_NAME --gencrl
 }
 

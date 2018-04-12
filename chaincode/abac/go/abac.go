@@ -39,6 +39,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 	// to see if the caller has the "abac.init" attribute with a value of true;
 	// if not, return an error.
 	//
+	// 鉴权的唯一一个简单 API，通过证书附带的 attribute 来验证。
 	err := cid.AssertAttributeValue(stub, "abac.init", "true")
 	if err != nil {
 		return shim.Error(err.Error())

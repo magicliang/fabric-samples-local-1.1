@@ -4,7 +4,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
-
+# 最后一个 cli 通用的
 set -e
 
 source $(dirname "$0")/env.sh
