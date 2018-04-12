@@ -4,7 +4,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
-
 set -e
 
 source $(dirname "$0")/env.sh
@@ -38,4 +37,5 @@ copyAdminCert $CORE_PEER_MSPCONFIGPATH
 # Start the peer
 log "Starting peer '$CORE_PEER_ID' with MSP at '$CORE_PEER_MSPCONFIGPATH'"
 env | grep CORE
+# 最后再启动本节点的关键命令
 peer node start
