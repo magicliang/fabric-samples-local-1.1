@@ -260,9 +260,12 @@ affiliations:
    org1:
       - department1
       - department2
+      - department3
    org2:
       - department1
-
+   # 为什么有时候这个地方不能被client读出来，是缩进的问题吗？
+   blockchain:
+      - mainet
 #############################################################################
 #  Signing section
 #

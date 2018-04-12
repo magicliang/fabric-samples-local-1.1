@@ -59,7 +59,7 @@ Organizations:
         Name: Org1MSP
 
         # ID to load the MSP definition as
-        ID: Org1MSP
+        ID: Org1--MSP
 
         MSPDir: crypto-config/peerOrganizations/org1.example.com/msp
 

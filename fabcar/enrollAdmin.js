@@ -78,7 +78,8 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
           // 可是为什么是 Org1MSP 呢？
           return fabric_client.createUser(
               {username: 'admin',
-                  mspid: 'Org1MSP',
+                  // 这里可以随便起名
+                  mspid: '乱七八糟MSP',
                   cryptoContent: { privateKeyPEM: enrollment.key.toBytes(), signedCertPEM: enrollment.certificate }
               });
         }).then((user) => {

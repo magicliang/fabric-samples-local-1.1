@@ -55,7 +55,8 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
     // 用admin user来生成一个新user 1。注意看我们没有提供密码，所以后台会直接生成密码给我们。
     // at this point we should have the admin user
     // first need to register the user with the CA server
-    return fabric_ca_client.register({enrollmentID: 'user1', affiliation: 'org1.department1',role: 'client'}, admin_user);
+    // 这个 affiliation 居然是必须的。而且必须是ca配置文件里面可以找到的附属机构行。
+    return fabric_ca_client.register({enrollmentID: 'user1', affiliation: 'blockchain.mainet',role: 'client'}, admin_user);
 }).then((secret) => {
     // next we need to enroll the user with CA server
     console.log('Successfully registered user1 - secret:'+ secret);
@@ -68,7 +69,10 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
   // 所以三部曲是这样的：register enroll 和createUser。第三步是 fabric_client 而不是 fabric_ca_client。
   return fabric_client.createUser(
      {username: 'user1',
-     mspid: 'Org1MSP',
+     // 这里之所以用 Org1 MSP，还是因为 CA 的根证书直接用了 org1 的。而 org1 的容器启动的时候选的 MSP ID 就是叫这个。
+     // 如果不叫这个 msp id，这个客户端证书签发的协议就不能得到背书。
+     // 值得注意的是，不管admin 是什么乱七八糟的 MSP，它都可以任意指定这个user为任意的 MSP，也就是说，不关affliation 什么事。
+     mspid: 'Org1--MSP',
      cryptoContent: { privateKeyPEM: enrollment.key.toBytes(), signedCertPEM: enrollment.certificate }
      });
 }).then((user) => {
