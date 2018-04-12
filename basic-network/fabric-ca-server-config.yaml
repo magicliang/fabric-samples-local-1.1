@@ -78,10 +78,12 @@ tls:
 #  should be trusted for this CA, where the 1st in the chain is always the
 #  root CA certificate.
 #############################################################################
+# TODO: 这里是每个org要启动一个ca？
 # 还好这里没有写成 fabric 那些 attribute。
 ca:
   # Name of this CA
   name:
+  # 这里如果为空，则自动由init生成 ca-cert.pem 和 ca-key.pem 文件
   # Key file (is only used to import a private key into BCCSP)
   keyfile:
   # Certificate file (default: ca-cert.pem)
@@ -118,24 +120,29 @@ crl:
 #     which means this "registry" section is ignored.
 #############################################################################
 registry:
+  # 如果这个值为 1，则登记密码只能用一次。
   # Maximum number of times a password/secret can be reused for enrollment
   # (default: -1, which means there is no limit)
   maxenrollments: -1
 
+  # 这套 identity 都是不属于任何部门，与 ldap 机制相互冲突的。
   # Contains identity information which is used when LDAP is disabled
   identities:
      - name: admin
        pass: adminpw
        type: client
        affiliation: ""
+       # 这些属性的分类方法有点像 MySQL 的 account privilege。有 privilege 的 identity 可以再 register 子权限的 identity。
        attrs:
           hf.Registrar.Roles: "peer,orderer,client,user"
           hf.Registrar.DelegateRoles: "peer,orderer,client,user"
           hf.Revoker: true
+          # 这个 attribute 居然是给 identity 用的，奇怪。
           hf.IntermediateCA: true
           hf.GenCRL: true
           hf.Registrar.Attributes: "*"
           hf.AffiliationMgr: true
+     # 由这个账户 register 的 user，如果不指定attribute 和 affiliation，可能默认就继承了 affliation 了。
      - name: magicliang
        pass: 123456
        type: client
@@ -276,6 +283,7 @@ signing:
     default:
       usage:
         - digital signature
+      # 证书有五年才过期
       expiry: 8760h
     profiles:
       ca:
@@ -313,6 +321,7 @@ signing:
 #     this is the default for an intermediate CA, which means it can not issue
 #     CA certificates though it can still issue end entity certificates.
 ###########################################################################
+# 这个 CA 的证书申请的 CSR
 csr:
    cn: fabric-ca-server
    names:
@@ -321,6 +330,7 @@ csr:
         L:
         O: magicliang
         OU: Fabric
+   # 这个 hosts 是乱写的吗？现实之中好像没有什么卵用。
    hosts:
      - 17070c4af815
      - localhost
