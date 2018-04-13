@@ -52,7 +52,7 @@ function registerOrdererIdentities {
          COUNT=$((COUNT+1))
       done
       log "Registering admin identity with $CA_NAME"
-      # admin 用 attribute 来专门区分。
+      # admin 用 attribute 来专门区分。有了这个admin的attribute，就可以执行创建channel加入channel等操作了。
       # The admin identity has the "admin" attribute which is added to ECert by default
       fabric-ca-client register -d --id.name $ADMIN_NAME --id.secret $ADMIN_PASS --id.attrs "admin=true:ecert"
    done
