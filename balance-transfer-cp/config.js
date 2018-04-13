@@ -11,6 +11,7 @@ else
 	file = util.format(file, '');
 // indicate to the application where the setup file is located so it able
 // to have the hfc load it to initalize the fabric client instance
+// 在这里配置了取配置文件的路径。
 hfc.setConfigSetting('network-connection-profile-path',path.join(__dirname, 'artifacts' ,file));
 hfc.setConfigSetting('Org1-connection-profile-path',path.join(__dirname, 'artifacts', 'org1.yaml'));
 hfc.setConfigSetting('Org2-connection-profile-path',path.join(__dirname, 'artifacts', 'org2.yaml'));

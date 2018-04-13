@@ -24,6 +24,7 @@ var copService = require('fabric-ca-client');
 
 var hfc = require('fabric-client');
 hfc.setLogger(logger);
+// 通过导入包引发副作用
 var ORGS = hfc.getConfigSetting('network-config');
 
 var clients = {};
@@ -41,6 +42,7 @@ async function getClientForOrg (userorg, username) {
 
 	// build a client context and load it with a connection profile
 	// lets only load the network settings and save the client for later
+	// 这一段拼起来就是 network-connection-profile-path
 	let client = hfc.loadFromConfig(hfc.getConfigSetting('network'+config));
 
 	// This will load a connection profile over the top of the current one one
@@ -59,6 +61,7 @@ async function getClientForOrg (userorg, username) {
 	// been registered and enrolled. If the user is found in persistence
 	// the call will then assign the user to the client object.
 	if(username) {
+		// 这里就不是用 hfc-key-keystore 的类型了。
 		let user = await client.getUserContext(username, true);
 		if(!user) {
 			throw new Error(util.format('User was not found :', username));
