@@ -30,3 +30,9 @@ balance-transfer/.DS_Store
 balance-transfer/node_modules/*
 balance-transfer/package-lock.json
 balance-transfer/fabric-client-kv-org*
+
+# balance transfer sample
+balance-transfer-cp/.DS_Store
+balance-transfer-cp/node_modules/*
+balance-transfer-cp/package-lock.json
+balance-transfer-cp/fabric-client-kv-org*
